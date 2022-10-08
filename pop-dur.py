@@ -50,4 +50,20 @@ for album in albuns:
         print("musica2")
 dados = {"Duração":duracao, "Popularidade":popoularidade, "Letra":letra}
 
+
+#Multi-índice
+
+indices = []
+for album in albuns:
+    for musica in albuns[album]:
+        indices.append((album, musica))
+#print(indices)
+index = pd.MultiIndex.from_tuples(indices, names=["Álbum", "Música"])
 print(dados)
+print(index)
+tabelinha = pd.DataFrame(dados, index=index)
+print(tabelinha)
+nome = artista.replace(" ", "-")
+tabelinha.to_csv(f"dataframe_{nome}.csv", encoding="utf-8")
+#encontrar_musica("Tiptoe", "Night Vision", "Imagine Dragons")
+
