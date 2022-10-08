@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 import busca_spotify as spo
-import busca_discografia_2 as disco
+import busca_discografia as disco
 
 def encontrar_musica(musica, album, artista):
     resposta = spo.spotify.search(query=musica, search_type="track")
