@@ -3,11 +3,12 @@ from bs4 import BeautifulSoup as b
 import pandas as pd
 
 def recolher_artista():
-    artista = input("Me indique uma banda ou um músico. \n").lower().replace(" ", "-")
+    artista = input("Me indique uma banda ou um músico. \n").lower()
     return artista
 
 #A função buscar_documento() recolhe do usuário uma string e faz uma busca por uma página de discografia do site letras.mus.br referente a essa string.
 def buscar_documento(artista):
+    artista.replace(" ", "-")
     link = f"https://www.letras.mus.br/{artista}/discografia/"
     pagina = r.get(link).text
     documento = b(pagina, "html.parser")
@@ -22,7 +23,9 @@ def buscar_albuns(documento):
     for album in documento.find_all("div", attrs={"class":"album-item g-sp"}):
         for musica in album.find_all("div", attrs={"class":"song-name"}):
             musicas.append(musica.text)
-        albuns[album.a.text]=musicas
+        album = album.a.text
+        album = album.replace(":", "")
+        albuns[album]=musicas
         musicas=[]
     return albuns
     #A coleta é feita com base na estrutura do código padrão do site, e é retornado pela função um dicionário cujas chaves são os álbuns do artista.
@@ -35,9 +38,35 @@ def buscar_letra(documento):
         musica_link = part.attrs.get("href")
         musica_doc=b(r.get(f"https://www.letras.mus.br{musica_link}").text, "html.parser")
         letra = musica_doc.find_all("div", attrs={"class":"cnt-letra p402_premium"})
-        letras.append(letra)
+        try:
+            #print("Caso 1: \n", letra[0].text)
+            if len(letra[0].find_all("p")) == 1:
+                #print("a\nr\nr\no\nz\n")
+                letras.append(-1)
+            else:
+                novo = ""
+                anterior = ""
+                for caractere in letra[0].text:
+                    if caractere == caractere.lower():
+                        novo+=caractere
+                        anterior = caractere
+                    elif anterior != " ":
+                        novo = novo + " " + caractere
+                        anterior = caractere
+                    else:
+                        novo+=caractere
+                letras.append(novo)
+                #print(letra)
+        except IndexError:
+            print("Caso 2: \n", letra)
+            letras.append(-1)
+        except AttributeError:
+            print("Caso 2: \n", letra)
+            letras.append(-1)
     return letras
     #Todas as letras são mantidas no seu formato de html e adicionadas a uma lista. Essa lista é retornada ao final da função.
+
+#def busca_duração
 
 def buscar_views(documento):
     views = []
@@ -46,9 +75,10 @@ def buscar_views(documento):
         musica_doc=b(r.get(f"https://www.letras.mus.br{musica_link}").text, "html.parser")
         try:
             view = musica_doc.find("div", attrs={"class":"cnt-info_exib"}).b.text
+            view = view.replace(".", "")
+            view = int(view)
+            views.append(view)
         except AttributeError:
             views.append(-1)
-        views.append(view)
     return views
-
 

@@ -7,7 +7,8 @@ import pandas as pd
 from bs4 import BeautifulSoup as b
 import re
 import copy
-
+import sys
+sys.path.insert(0, ".")
 import busca_spotify as spo
 import busca_discografia as disco
 
@@ -17,8 +18,17 @@ import busca_discografia as disco
 #Se ao fim da seleção, a lista de resultado estiver vazia, é inserido o -1 padrão, que no dataframe indica que a informação não está disponível.
 #Se o objeto retornado pela busca não tiver as chave solicitadas, é anexado -1.
 def encontrar_musica(musica, album, artista):
-    x=0
-    y=0
+    """
+
+    Faz uma pesquisa na API do Spotify e retorna os resultados
+    
+    :param str musica: A música buscada
+    :param str album: O álbum do qual a música faz parte
+    :param str artista: O musicista ou banda a quem a música pertence
+    :return: Os registro de música com esse nome que se enquadram no álbum e no artista
+    :rtype: list
+    :raise KeyError: se opcao não tiver as chaves requisitadas
+    """
     resposta = spo.spotify.search(query=musica, search_type="track")
     resultado = []
     try:
@@ -33,29 +43,47 @@ def encontrar_musica(musica, album, artista):
         resultado.append(-1)
         print(resultado)
     return resultado
-    #A função retorna a lista resultado.
 
-#A função busca_popularidade recebe uma lista fonte. Caso seu conteúdo seja -1, ela repassa -1. Caso contrário, será um dicionário, do qual a função coleta a popularidade da música e a devolve.
+#A função busca_popularidade recebe uma lista fonte. Caso seu conteúdo seja -1, ela repassa -1. Caso contrário, será um ou mais dicionários, e a função coleta, do primeiro deles, a popularidade da música e a devolve.
 def buscar_popularidade(fonte):
-    popularidade = []
+    """
+
+    Busca no primeiro item de uma lista o valor da popularidade
+    
+    :param list fonte: Lista de resultados obtidos da função encontrar_musica()
+    :return: A popularidade
+    >rtype: int
+    """
     if fonte[0]==-1:
         return -1
     else:
         return fonte[0]["popularity"]
-    #A função retorna um número inteiro entre menos um e cem, inclusos.
 
-#A função busca_duracao recebe uma lista fonte. Caso seu conteúdo seja -1, ela repassa -1. Caso contrário, será um dicionário, do qual a função coleta a duracao em milisegundos da música, converte em segundos e a devolve.
+#A função busca_duracao recebe uma lista fonte. Caso seu conteúdo seja -1, ela repassa -1. Caso contrário, será um ou mais dicionários, e a função coleta, do primeiro deles, a duracao em milisegundos da música, a converte em segundos e a devolve.
 def buscar_duracao(fonte):
+    """
+
+    Busca no primeiro item de uma lista o valor da duração
+    
+    :param list fonte: Lista de resultados obtidos pela função encontrar_musica()
+    :return: A duração
+    >rtype: int or float
+    """
     if fonte[0]==-1:
         return -1
-        #print("I")
     else:
         mili=fonte[0]["duration_ms"]
-        #print(mili)
         return float(mili/1000)
-    #A função retorna um número decimal.
     
 def criar_multiindex(albuns):
+    """
+
+    Cria um multi-index composto por nomes de álbuns e músicas
+    
+    :param dict albuns: Dicionário no qual as chaves são álbuns de um artista, e os valores dessas chaves são listas das músicas correspondentes
+    :return: Uma estrutura multi-index
+    >rtype: pandas.core.indexes.multi.MultiIndex
+    """
     indices = []
     for album in albuns:
         for musica in albuns[album]:
@@ -65,6 +93,14 @@ def criar_multiindex(albuns):
 
 
 def buscar_premios(albuns):
+    """
+
+    Busca numa página da wikipédia os prêmios que o músico Seu Jorge conquistou em sua carreira musical
+    
+    :param dict albuns: Dicionário no qual as chaves são álbuns de um artista, e os valores dessas chaves são listas das músicas correspondentes
+    :return: Uma lista com o tanto de prêmios ganhos num álbum do Seu Jorge para cada música presente no álbum. Caso o artista buscado seja outro que não ele, a série deve estar preenchida por zeros.
+    >rtype: list
+    """
     num=0
     premios = []
     posicao=0
@@ -104,11 +140,27 @@ def buscar_premios(albuns):
     return premios_final
 
 def criar_dados(duracao, popularidade, visualizacoes, letra, premios):
+    """
+
+    Cria, a partir de listas, um dicionário
+
+    :param list duracao: A duração em segundos de cada música, de acordo com o Spotify
+    :param list popularidade: A popularidade de cada música, de 1 a 100, de acordo com o Spotify
+    :param list visualizacoes: O número de visualizações da música no site letras.mus.br
+    :param list letra: A letra da música, de acordo com o Letras
+    :param list premios: A quantidade de prêmios recebidos pelo álbum correspondente a cada música, de acordo com a Wikipédia
+    :return: Um dicionário
+    :rtype: dict
+    """
     dados = {"Duração":duracao, "Popularidade":popularidade, "Visualizações": visualizacoes, "Letra":letra, "Prêmios": premios}
     return dados
 
 
 def criar_df():
+    """
+
+    Função central do módulo. Ela chama as outras funções e funções de outros módulos, para montar um dataframe, mostrá-lo ao usuário e salvá-lo com um arquivo .csv. Ela não retorna nada. Qualquer entrada '-1' no dataframe indica uma informação não encontrada pelo programa.
+    """
     artista = disco.recolher_artista()
     documento = disco.buscar_documento(artista)
     albuns = disco.buscar_albuns(documento)
@@ -123,29 +175,15 @@ def criar_df():
     letra = disco.buscar_letra(documento)
     premios = buscar_premios(albuns)
     indice = criar_multiindex(albuns)
-    print(indice)
     dados = criar_dados(duracao, popularidade, visualizacoes, letra, premios)
     tabelinha = pd.DataFrame(dados, index=indice)
-    """except:
-        print(dados)
-        for atributo in dados:
-            print("Ahhh", dados[atributo], "\n", len(dados[atributo]))
-        tabelinha=pd.DataFrame(dados)
-    tabelinha = tabelinha.astype({'Visualizações':'int'})"""
     print(tabelinha)
     nome = artista.replace(" ", "-")
     tabelinha.to_csv(f"dataframe_{nome}.csv", encoding="utf-8")
 
 
-
-criar_df()
-
-print("deu")
-
-
-
-
-
+if __name__ == "__main__":
+    criar_df()
 
 
 
