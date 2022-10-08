@@ -12,3 +12,15 @@ def buscar_documento():
     #A string é formatada e integrada numa nova string no padrão do site. É feita a busca pelo documento e a conversão em texto interpretado como html.
     #Por fim, é retornado o documento(variável que contém o código em html da página visada.)
 
+#A função buscar_albuns() coleta de um documento recebido(espera-se um do tipo html no formato das páginas de discografia de letras.mus.br) álbuns e músicas presentes na discografia visada.
+def buscar_albuns(documento):
+    albuns = {}
+    musicas = []
+    for album in documento.find_all("div", attrs={"class":"album-item g-sp"}):
+        for musica in album.find_all("div", attrs={"class":"song-name"}):
+            musicas.append(musica.text)
+        albuns[album.a.text]=musicas
+        musicas=[]
+    return albuns
+    #A coleta é feita com base na estrutura do código padrão do site, e é retornado pela função um dicionário cujas chaves são os álbuns do artista.
+    #O valor de cada chave é uma lista contendo as músicas presentes no álbum.
