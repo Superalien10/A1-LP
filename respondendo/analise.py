@@ -108,3 +108,34 @@ for album in albuns:
     fim.to_csv(f"dataframe_duração_{album}.csv", encoding="utf-8")
     print(fim)
     
+#Questão 5
+
+cola = []
+for album in albuns:
+    for musica in albuns[album]:
+        cola.append(album)
+dados = {"Álbum": cola}
+indices = []
+for album in albuns:
+    for musica in albuns[album]:
+        indices.append((album, musica))
+index = pd.MultiIndex.from_tuples(indices, names=["Álbum", "Música"])
+novo = pd.DataFrame(dados, index=index)
+
+ordem_vis = df.sort_values(by=["Prêmios"], ascending=False)
+ordem_vis = pd.concat([ordem_vis, novo], axis=1)
+ordem_vis = ordem_vis.loc[:,["Álbum", "Prêmios"]]
+print(ordem_vis)
+ordem_vis = ordem_vis.drop_duplicates(["Álbum", "Prêmios"], keep='first')
+print(ordem_vis)
+
+#ordem_vis.drop("Extra-Álbum", axis=1, inplace=True)
+mascara_desinformacao = ordem_vis["Prêmios"] != -1
+ordem_vis = ordem_vis.loc[mascara_desinformacao]
+#print(ordem_vis.columns)
+#ordem_vis = ordem_vis.columns.droplevel(0)
+premiadas = ordem_vis.head()
+print(premiadas)
+#print(pd.DataFrame(ordem_vis.columns))
+premiadas.to_csv(f"dataframe_premiadas.csv", encoding="utf-8", index=False)
+    
