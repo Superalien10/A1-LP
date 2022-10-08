@@ -51,4 +51,35 @@ def buscar_views(documento):
         views.append(view)
     return views
 
-#print(buscar_views(buscar_documento("ed sheeran")))
+
+artista = "Seu Jorge"
+artista.replace(" ", "_")
+link = f"https://pt.wikipedia.org/wiki/{artista}"
+pagina = r.get(link).text
+documento = b(pagina, "html.parser")
+#resultado = documento.find_all("td", attrs={"class":"table-yes2"})
+#print(resultado)
+"""
+tabelas = documento.find_all("table", attrs={"class":"wikitable"})
+print(len(tabelas))
+
+nomes = documento.find_all("span", attrs={"class":"mw-headline"})
+print(len(nomes))
+"""
+tabelas = documento.find_all("table", attrs={"class":"wikitable"})
+print(tabelas)
+vencedores=[]
+for tabela in tabelas:
+    trs = tabela.find_all("tr")
+    for tr in trs:
+        #print(tr)
+        tds = tr.find_all("td")
+        try:
+            if tds[-1].text == "Venceu\n":
+                vencedores.append(tds[-2].text)
+        except IndexError:
+            assert 1==1
+        #except AttributeError:
+        #    assert 2!=1
+
+print(vencedores)
