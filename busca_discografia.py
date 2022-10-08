@@ -2,9 +2,12 @@ import requests as r
 from bs4 import BeautifulSoup as b
 import pandas as pd
 
-#A função buscar_documento() recolhe do usuário uma string e faz uma busca por uma página de discografia do site letras.mus.br referente a essa string.
-def buscar_documento():
+def recolher_artista():
     artista = input("Me indique uma banda ou um músico. \n").lower().replace(" ", "-")
+    return artista
+
+#A função buscar_documento() recolhe do usuário uma string e faz uma busca por uma página de discografia do site letras.mus.br referente a essa string.
+def buscar_documento(artista):
     link = f"https://www.letras.mus.br/{artista}/discografia/"
     pagina = r.get(link).text
     documento = b(pagina, "html.parser")
