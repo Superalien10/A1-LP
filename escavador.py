@@ -13,17 +13,15 @@ pagina = pagina.text #Após pegar o html da página com requests, registramos su
 sopa = b(pagina, "html.parser") #Preparamos o texto para análise com uma função do bs4.
 print("Começo") #Esse print e o último são para facilitar a localização do usuário ao buscar htmls muito extensos.
 
-classe = sopa.find_all("div", attrs={"class":"album-item g-sp"}) #Com essa linha, pegamos uma serie com cada div do tipo desejado.
+classe = sopa.find_all("div", attrs={"class":"album-item g-sp"}) #Com essa linha, pegamos cada div do tipo desejado, num objeto do bs4.
 albuns={}
 musicas=[]
 for album in classe:
-    song=album.find_all("div", attrs={"class":"song-name"}) #Coletamos em uma série os nomes das músicas no presente álbum(div).
+    song=album.find_all("div", attrs={"class":"song-name"}) #Coletamos os nomes das músicas no presente álbum(div), também num objeto do pacote bs4.
     for musica in song:
         musicas.append(musica.text) #Coletamos o nome da música em si e anexamos a uma lista.
     albuns[album.a.text]=musicas #Inserimos essa lista no dicionário com uma entrada referente ao álbum no qual as músicas estão.
     musicas=[] #Limpamos a lista para o próximo álbum.
 print(albuns) #Imprimimos o dicionário com os álbuns e suas músicas.
 
-musicas = pd.DataFrame(albuns)
-print(musicas)
 print("FIM")
