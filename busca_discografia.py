@@ -39,3 +39,16 @@ def buscar_letra(documento):
     return letras
     #Todas as letras são mantidas no seu formato de html e adicionadas a uma lista. Essa lista é retornada ao final da função.
 
+def buscar_views(documento):
+    views = []
+    for part in documento.find_all("a", attrs={"class":"bt-play-song"}):
+        musica_link = part.attrs.get("href")
+        musica_doc=b(r.get(f"https://www.letras.mus.br{musica_link}").text, "html.parser")
+        try:
+            view = musica_doc.find("div", attrs={"class":"cnt-info_exib"}).b.text
+        except AttributeError:
+            views.append(-1)
+        views.append(view)
+    return views
+
+#print(buscar_views(buscar_documento("ed sheeran")))
