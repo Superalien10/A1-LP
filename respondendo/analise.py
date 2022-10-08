@@ -52,3 +52,40 @@ print("Músicas mais ouvidas: \n", mais_ouvidas, "\nMúsicas menos ouvidas: \n",
 mais_ouvidas.to_csv(f"dataframe_mais_ouvidas.csv", encoding="utf-8")
 menos_ouvidas.to_csv(f"dataframe_menos_ouvidas.csv", encoding="utf-8")
 
+"""
+multi_index = ordem_vis.index
+for album in multi_index:
+    print(ordem_vis.groupby("Álbum").tail(5).sort_values(by=["Álbum"], ascending=False))"""
+
+"""
+print(ordem_vis.groupby("Álbum", sort=False).head(5).sort_values(by=["Álbum"], ascending=False))
+print(ordem_vis)
+
+#print(ordem_vis.loc[:,"América Latina"])
+grouped = (ordem_vis.groupby(level="Álbum", sort=False))
+print(grouped)
+#print(grouped.get_group(0))
+
+
+new_df = ordem_vis.groupby("Álbum", sort=False).head(5)
+new_df.to_csv("averiguando.csv", encoding="utf-8")
+
+
+print(ordem_vis.iloc[0], "\n\n", ordem_vis.iloc[7])
+"""
+import copy
+
+cola = []
+for album in albuns:
+    for musica in albuns[album]:
+        cola.append(album)
+dados = {"Extra-Álbum": cola}
+novo = pd.DataFrame(dados, index=index)
+ordem_vis = pd.concat([ordem_vis, novo], axis=1)
+for album in albuns:
+    mascara_album = ordem_vis["Extra-Álbum"] == album
+    fim = copy.deepcopy(ordem_vis.loc[mascara_album])
+    fim.dropna(inplace=True)
+    fim.drop("Extra-Álbum", axis=1, inplace=True)
+    fim.to_csv(f"dataframe_visualizacoes_{album}.csv", encoding="utf-8")
+    print(fim)
