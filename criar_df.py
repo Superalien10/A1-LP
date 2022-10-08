@@ -85,15 +85,3 @@ print(tabelinha)
 nome = artista.replace(" ", "-")
 tabelinha.to_csv(f"dataframe_{nome}.csv", encoding="utf-8")
 
-
-verificacao = []
-vencedores = disco.vencedores
-for album in albuns:
-    verificacao.append(album)
-    for musica in album:
-        verificacao.append(musica)
-premio_album = []
-for album in albuns:
-    if album in vencedores:
-        premio_album.append()
-
