@@ -24,3 +24,15 @@ def buscar_albuns(documento):
     return albuns
     #A coleta é feita com base na estrutura do código padrão do site, e é retornado pela função um dicionário cujas chaves são os álbuns do artista.
     #O valor de cada chave é uma lista contendo as músicas presentes no álbum.
+
+#A função buscar_letra() recebe um documento, coleta links para páginas referentes às músicas, transforma esses sites em documentos e coleta deles as letras das músicas. 
+def buscar_letra(documento):
+    letras = []
+    for part in documento.find_all("a", attrs={"class":"bt-play-song"}):
+        musica_link = part.attrs.get("href")
+        musica_doc=b(r.get(f"https://www.letras.mus.br{musica_link}").text, "html.parser")
+        letra = musica_doc.find_all("div", attrs={"class":"cnt-letra p402_premium"})
+        letras.append(letra)
+    return letras
+    #Todas as letras são mantidas no seu formato de html e adicionadas a uma lista. Essa lista é retornada ao final da função.
+
