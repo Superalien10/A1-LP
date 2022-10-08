@@ -115,3 +115,5 @@ def search(self, query=None, operator=None, operator_query=None, search_type='ar
     print(query_params)
     return self.base_search(query_params)
 
+client_id = '234d56555aa14d96a811661dfcf00d64'
+client_secret = '0fb68f689a0c4faabbadc9f88571d739'
