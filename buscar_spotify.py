@@ -117,3 +117,6 @@ def search(self, query=None, operator=None, operator_query=None, search_type='ar
 
 client_id = '234d56555aa14d96a811661dfcf00d64'
 client_secret = '0fb68f689a0c4faabbadc9f88571d739'
+
+spotify = SpotifyAPI(client_id, client_secret)
+spotify.search({"track":"Time"}, search_type="track")
