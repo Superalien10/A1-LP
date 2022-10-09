@@ -10,3 +10,7 @@ re
 requests
 sys
 utllib
+os
+matplotlib
+wordcloud
+collections
