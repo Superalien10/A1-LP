@@ -156,7 +156,7 @@ def criar_dados(duracao, popularidade, visualizacoes, letra, premios):
     return dados
 
 
-def criar_df():
+def criar_tabela():
     """
 
     Função central do módulo. Ela chama as outras funções e funções de outros módulos, para montar um dataframe, mostrá-lo ao usuário e salvá-lo com um arquivo .csv. Ela não retorna nada. Qualquer entrada '-1' no dataframe indica uma informação não encontrada pelo programa.
@@ -183,7 +183,7 @@ def criar_df():
 
 
 if __name__ == "__main__":
-    criar_df()
+    criar_tabela()
 
 
 
