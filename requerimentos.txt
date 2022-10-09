@@ -1,0 +1,12 @@
+As bibliotecas de python a seguir são necessárias para rodar o programa.
+
+base64
+bs4
+copy
+datetime
+numpy
+pandas
+re
+requests
+sys
+utllib
