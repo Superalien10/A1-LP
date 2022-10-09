@@ -4,21 +4,23 @@ from bs4 import BeautifulSoup as b
 import sys
 sys.path.insert(0, "..")
 import busca_discografia as disco
-from criar_df import criar_multiindex# as cdf
+from criar_df import criar_multiindex
 import copy
 
 
 def buscando_albuns(documento):
+    """
+
+    Busca no documento html os nomes de álbuns e músicas
+
+    :param documento: Documento html
+    :return: Dicionário contendo listas de músicas guardadas nos nomes de seus álbuns
+    :rtype: dict
+    """
     albuns = {}
     musicas = []
     for album in documento.find_all("div", attrs={"class":"album-item g-sp"}):
         for musica in album.find_all("div", attrs={"class":"song-name"}):
-            """
-            print(musica.txt)
-            musica = musica.txt
-            print(musica)
-            copia = copy.deepcopy(str(musica).title())
-            print(copia)"""
             musicas.append(musica.txt)
         album = album.a.text
         album = album.replace(":", "")
@@ -27,9 +29,17 @@ def buscando_albuns(documento):
     return albuns
 
 
-
-
 def col_extra(df, documento, col):
+    """
+
+    Adiciona uma coluna ao df, que corresponde a um dos níveis do multi-índice
+
+    :param pandas.Dataframe df: Dataframe que receberá anexo
+    :param documento: Documento html fonte de dados
+    :param str col: Nome da coluna a ser criada, que indica sua origem
+    :return: Novo dataframe
+    :rtype: pandas.DataFrame
+    """
     albuns = disco.buscar_albuns(documento)
     index = criar_multiindex(albuns)
     if col == "Extra-Álbum":
@@ -62,6 +72,11 @@ def col_extra(df, documento, col):
 
     
 def criar_album_vis():
+    """
+
+    Cria um dataframe ordenado pelas visualizações, para cada álbum
+
+    """
     df = pd.read_csv('../dataframe_seu-jorge.csv', index_col=["Álbum","Música"])
     documento = disco.buscar_documento("seu jorge")
     albuns = buscando_albuns(documento)
@@ -78,9 +93,12 @@ def criar_album_vis():
         album_vis.to_csv(f"dataframe_visualizacoes_{album}.csv", encoding="utf-8")
         print(album_vis)
 
-criar_album_vis()
 
 def criar_album_dur():
+    """
+
+    Cria um dataframe ordenado pela duração, para cada álbum
+    """
     df = pd.read_csv('../dataframe_seu-jorge.csv', index_col=["Álbum","Música"])
     documento = disco.buscar_documento("seu jorge")
     albuns = buscando_albuns(documento)
@@ -97,10 +115,13 @@ def criar_album_dur():
         album_dur.to_csv(f"dataframe_duração_{album}.csv", encoding="utf-8")
         print(album_dur)
 
-criar_album_dur()
 
 
 def criar_musica_vis():
+    """
+
+    Cria um dataframe com as músicas mais visualizadas e outro com as menos
+    """
     df = pd.read_csv('../dataframe_seu-jorge.csv', index_col=["Álbum","Música"])
     documento = disco.buscar_documento("seu jorge")
     albuns = buscando_albuns(documento)
@@ -117,10 +138,13 @@ def criar_musica_vis():
     menos_ouvidas.to_csv(f"dataframe_menos_ouvidas.csv", encoding="utf-8")
     print("Músicas mais ouvidas: \n", mais_ouvidas, "\nMúsicas menos ouvidas: \n", menos_ouvidas)
 
-criar_musica_vis()
 
 
 def criar_musica_dur():
+    """
+
+    Cria um dataframe com as músicas mais longas e outro com as mais curtas
+    """
     df = pd.read_csv('../dataframe_seu-jorge.csv', index_col=["Álbum","Música"])
     documento = disco.buscar_documento("seu jorge")
     albuns = buscando_albuns(documento)
@@ -137,10 +161,13 @@ def criar_musica_dur():
     mais_curtas.to_csv(f"dataframe_mais_curtas.csv", encoding="utf-8")
     print("Músicas mais longas: \n", mais_longas, "\nMúsicas mais curtas: \n", mais_curtas)
 
-criar_musica_dur()
 
 
 def criar_album_pre():
+    """
+
+    Cria um dataframe ordenado pelos prêmios com uma música por álbum e limitado aos top cinco
+    """
     df = pd.read_csv('../dataframe_seu-jorge.csv', index_col=["Álbum"])
     documento = disco.buscar_documento("seu jorge")
     albuns = buscando_albuns(documento)
@@ -155,11 +182,14 @@ def criar_album_pre():
     premiadas.to_csv(f"dataframe_premiadas.csv", encoding="utf-8")
     print(premiadas)
 
-criar_album_pre()
 
 
 
 def criar_album_pop():
+    """
+
+    Cria um dataframe ordenado pela popularidade, para cada álbum
+    """
     df = pd.read_csv('../dataframe_seu-jorge.csv', index_col=["Álbum","Música"])
     documento = disco.buscar_documento("seu jorge")
     albuns = buscando_albuns(documento)
@@ -176,11 +206,14 @@ def criar_album_pop():
         album_pop.to_csv(f"dataframe_popularidade_{album}.csv", encoding="utf-8")
         print(album_pop)
 
-criar_album_pop()
 
 
 
 def criar_musica_pop():
+    """
+
+    Cria um dataframe com as músicas mais populares e outro com as menos populares
+    """
     df = pd.read_csv('../dataframe_seu-jorge.csv', index_col=["Álbum","Música"])
     documento = disco.buscar_documento("seu jorge")
     albuns = buscando_albuns(documento)
@@ -197,4 +230,14 @@ def criar_musica_pop():
     menos_populares.to_csv(f"dataframe_menos_populares.csv", encoding="utf-8")
     print("Músicas mais populares: \n", mais_populares, "\nMúsicas menos populares: \n", menos_populares)
 
-criar_musica_pop()
+
+
+
+if __name__ == '__main__':
+    criar_album_vis()
+    criar_album_dur()
+    criar_musica_vis()
+    criar_musica_dur()
+    criar_album_pre()
+    criar_album_pop()
+    criar_musica_pop()
