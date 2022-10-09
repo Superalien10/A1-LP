@@ -27,5 +27,5 @@ musicas_discografia = df_seu_jorge['Música'].unique()
 for musicas in musicas_discografia:
         print(recorrencia_musica_letra(musicas), '\n')
 
-print(recorrencia_musica_letra('Saravá'))
+
 
