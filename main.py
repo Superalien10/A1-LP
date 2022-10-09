@@ -2,7 +2,8 @@ from analise_palavras import *
 import busca_spotify as spo
 import busca_discografia as disco
 import criar_df as cdf
-import respondendo/analise as an
+sys.path.insert(0, "respondendo")
+import analise as an
 
 print("DataFrame principal")
 cdf.criar_tabela()
