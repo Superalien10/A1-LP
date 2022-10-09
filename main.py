@@ -1,4 +1,19 @@
 from analise_palavras import *
+import busca_spotify as spo
+import busca_discografia as disco
+import criar_df as cdf
+import respondendo/analise as an
+
+print("DataFrame principal")
+cdf.criar_tabela()
+print("DataFrames subjacentes")
+an.criar_album_vis()
+an.criar_album_dur()
+an.criar_musica_vis()
+an.criar_musica_dur()
+an.criar_album_pre()
+an.criar_album_pop()
+an.criar_musica_pop()
 
 
 print(analise_discografia('Álbum'))
