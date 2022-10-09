@@ -7,10 +7,10 @@ from collections import Counter
 import re
 
 # criando o dataframe com as músicas
-df_seu_jorge = pd.read_csv(r'C:\Users\rodri\Downloads\Estudos\FGV\Matérias\6° Período\Linguagens de Programação\A1 LP\dataframe_seu-jorge.csv')
+df_seu_jorge = pd.read_csv(r'dataframe_seu-jorge.csv')
 
 # definindo e atualizando as stopwords
-stopwords_arquivo = open(r'C:\Users\rodri\Downloads\Estudos\FGV\Matérias\6° Período\Linguagens de Programação\A1 LP\stopwords_portugues.txt', 'r', encoding = 'utf-8')
+stopwords_arquivo = open(r'stopwords_portugues.txt', 'r', encoding = 'utf-8')
 
 stopwords_portugues = list(line.split(' ') for line in stopwords_arquivo.readlines())
 stopwords_portugues = stopwords_portugues[0]
